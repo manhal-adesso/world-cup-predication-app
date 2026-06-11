@@ -14,7 +14,9 @@ export async function SiteHeader() {
       <div className="container flex h-14 items-center gap-4">
         <Link href="/" className="flex items-center gap-2 font-bold">
           <Trophy className="h-5 w-5 text-primary" />
-          <span>World Cup Predictions</span>
+          <span>
+            <span className="lowercase">adesso</span> World Cup Prediction
+          </span>
         </Link>
 
         <nav className="ml-auto flex items-center gap-1 text-sm">

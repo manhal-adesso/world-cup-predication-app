@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: { default: "World Cup Predictions", template: "%s · World Cup Predictions" },
+  title: { default: "adesso world cup prediction", template: "%s · adesso world cup prediction" },
   description: "Predict every match. Climb the leaderboard. Win bragging rights.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
 };

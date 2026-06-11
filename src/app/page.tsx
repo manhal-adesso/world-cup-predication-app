@@ -51,22 +51,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="container py-12">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Feature icon={<Target className="h-5 w-5" />} title="Simple scoring">
-            +1 for correct winner. +3 for exact score. Max 4 per match.
-          </Feature>
-          <Feature icon={<Users className="h-5 w-5" />} title="Private leagues">
-            Create a league, share the invite code, compete with friends.
-          </Feature>
-          <Feature icon={<Trophy className="h-5 w-5" />} title="Live leaderboard">
-            Scores recompute automatically the moment results are posted.
-          </Feature>
-        </div>
-      </section>
-
       {upcoming && upcoming.length > 0 && (
-        <section className="container pb-12">
+        <section className="container py-12">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-xl font-semibold">Upcoming matches</h2>
             <Button variant="link" asChild>
@@ -80,6 +66,20 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      <section className="container pb-12">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <Feature icon={<Target className="h-5 w-5" />} title="Simple scoring">
+            +1 for correct winner. +3 for exact score. Max 4 per match.
+          </Feature>
+          <Feature icon={<Users className="h-5 w-5" />} title="Private leagues">
+            Create a league, share the invite code, compete with friends.
+          </Feature>
+          <Feature icon={<Trophy className="h-5 w-5" />} title="Live leaderboard">
+            Scores recompute automatically the moment results are posted.
+          </Feature>
+        </div>
+      </section>
     </div>
   );
 }

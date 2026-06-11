@@ -16,7 +16,9 @@ export default function AuthLayout({
             <Trophy className="h-6 w-6 text-primary" />
           </div>
           <CardTitle className="text-2xl">
-            <Link href="/">World Cup Predictions</Link>
+            <Link href="/">
+              <span className="lowercase">adesso</span> World Cup Prediction
+            </Link>
           </CardTitle>
           <CardDescription>Predict every match. Climb the leaderboard.</CardDescription>
         </CardHeader>

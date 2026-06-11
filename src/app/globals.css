@@ -4,59 +4,60 @@
 
 @layer base {
   :root {
+    /* White & royal blue theme */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    --foreground: 224 71% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 224 71% 12%;
 
-    --primary: 142 70% 35%;
+    --primary: 224 76% 48%;            /* royal blue */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 214 100% 97%;         /* very light blue tint */
+    --secondary-foreground: 224 71% 12%;
 
-    --muted: 210 40% 96%;
+    --muted: 214 32% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 214 100% 97%;
+    --accent-foreground: 224 76% 48%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 142 70% 35%;
+    --ring: 224 76% 48%;
 
     --radius: 0.625rem;
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
+    --background: 224 71% 6%;
+    --foreground: 0 0% 100%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 210 40% 98%;
+    --card: 224 71% 10%;
+    --card-foreground: 0 0% 100%;
 
-    --primary: 142 70% 45%;
-    --primary-foreground: 222 47% 6%;
+    --primary: 217 91% 60%;            /* lighter royal blue for dark bg */
+    --primary-foreground: 224 71% 6%;
 
     --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 0 0% 100%;
 
     --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted-foreground: 215 20% 70%;
 
     --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 217 91% 60%;
 
     --destructive: 0 70% 45%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
     --border: 217 33% 20%;
     --input: 217 33% 20%;
-    --ring: 142 70% 45%;
+    --ring: 217 91% 60%;
   }
 
   * { @apply border-border; }
@@ -67,11 +68,13 @@
 }
 
 @layer utilities {
+  /* Kept the class name `pitch-gradient` for backwards compatibility;
+     it now renders a royal-blue gradient instead of the old green pitch. */
   .pitch-gradient {
     background: linear-gradient(
       135deg,
-      hsl(142 60% 22%) 0%,
-      hsl(142 70% 35%) 100%
+      hsl(224 64% 33%) 0%,
+      hsl(224 76% 48%) 100%
     );
   }
 }

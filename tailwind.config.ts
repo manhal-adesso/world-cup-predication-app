@@ -37,8 +37,8 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))"
         },
         pitch: {
-          DEFAULT: "hsl(142 70% 35%)",
-          dark: "hsl(142 60% 22%)"
+          DEFAULT: "hsl(224 76% 48%)",
+          dark: "hsl(224 64% 33%)"
         }
       },
       borderRadius: {

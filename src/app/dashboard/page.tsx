@@ -57,24 +57,6 @@ export default async function DashboardPage() {
         <p className="text-sm text-muted-foreground">Here&apos;s what&apos;s happening across the tournament.</p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <StatCard
-          icon={<Trophy className="h-4 w-4" />}
-          label="Total points"
-          value={session.profile.total_points.toString()}
-        />
-        <StatCard
-          icon={<Calendar className="h-4 w-4" />}
-          label="Global rank"
-          value={rankRow ? `#${rankRow.rank}` : "—"}
-        />
-        <StatCard
-          icon={<Users className="h-4 w-4" />}
-          label="Leagues joined"
-          value={(leagues?.length ?? 0).toString()}
-        />
-      </div>
-
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Upcoming matches</h2>
@@ -100,6 +82,24 @@ export default async function DashboardPage() {
           <p className="text-sm text-muted-foreground">No upcoming matches.</p>
         )}
       </section>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <StatCard
+          icon={<Trophy className="h-4 w-4" />}
+          label="Total points"
+          value={session.profile.total_points.toString()}
+        />
+        <StatCard
+          icon={<Calendar className="h-4 w-4" />}
+          label="Global rank"
+          value={rankRow ? `#${rankRow.rank}` : "—"}
+        />
+        <StatCard
+          icon={<Users className="h-4 w-4" />}
+          label="Leagues joined"
+          value={(leagues?.length ?? 0).toString()}
+        />
+      </div>
 
       <section>
         <div className="mb-3 flex items-center justify-between">
