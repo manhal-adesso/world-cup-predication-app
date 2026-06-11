@@ -21,16 +21,35 @@ function formatDelta(ms: number): string {
 }
 
 export function Countdown({ kickoffISO }: CountdownProps) {
-  const [now, setNow] = React.useState(() => Date.now());
+  // Render a stable placeholder during SSR / first client paint to avoid a
+  // hydration mismatch (server `Date.now()` is always different from the
+  // client's by the time hydration runs).
+  const [now, setNow] = React.useState<number | null>(null);
 
   React.useEffect(() => {
+    setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
   const kickoff = new Date(kickoffISO).getTime();
-  const lockMs  = kickoff - PREDICTION_LOCK_MINUTES * 60_000;
-  const locked  = now >= lockMs;
+  const lockMs = kickoff - PREDICTION_LOCK_MINUTES * 60_000;
+
+  // Placeholder shown on server + first client render. Layout matches the
+  // final state so there's no flash / shift.
+  if (now === null) {
+    return (
+      <div
+        className="flex flex-col items-end gap-1 text-right"
+        suppressHydrationWarning
+      >
+        <span className="text-xs text-muted-foreground">Locks in</span>
+        <span className="text-lg font-bold tabular-nums">--:--:--</span>
+      </div>
+    );
+  }
+
+  const locked = now >= lockMs;
   const started = now >= kickoff;
 
   if (started) {
