@@ -62,108 +62,128 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
         <Menu className="h-5 w-5" />
       </Button>
 
-      {open && (
-        <>
-          <div
-            className="fixed inset-0 z-50 md:hidden"
+     {open && (
+  <>
+    {/* Overlay */}
+    <div
+      className="fixed inset-0 z-[9998] bg-black/50 md:hidden"
+      onClick={() => setOpen(false)}
+    />
+
+    {/* Mobile Sidebar */}
+    <div className="fixed top-0 right-0 z-[9999] h-screen w-72 bg-white text-slate-900 shadow-2xl md:hidden">
+      <div className="flex h-full flex-col">
+        {/* Header */}
+        <div className="flex h-14 items-center justify-end border-b border-slate-200 px-4">
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setOpen(false)}
-          />
-          <div className="fixed inset-y-0 right-0 z-50 flex w-64 flex-col border-l bg-background shadow-lg md:hidden">
-            <div className="flex items-center justify-end border-b px-4 h-14 shrink-0">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto p-4">
+          <div className="space-y-1">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
                 onClick={() => setOpen(false)}
-                aria-label="Close menu"
+                className="block rounded-lg px-4 py-3 text-slate-900 hover:bg-slate-100 transition-colors"
               >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            <nav className="flex-1 p-2 space-y-0.5">
-              {links.map((link) => (
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </nav>
+
+        {/* Bottom Section */}
+        <div className="border-t border-slate-200 p-4">
+          {profile ? (
+            <>
+              <Link
+                href="/profile"
+                onClick={() => setOpen(false)}
+                className="mb-4 flex items-center gap-3 rounded-lg p-2 hover:bg-slate-100"
+              >
+                <Avatar className="h-10 w-10">
+                  {profile.avatar_url ? (
+                    <AvatarImage src={profile.avatar_url} alt="" />
+                  ) : null}
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+
+                <div className="min-w-0">
+                  <p className="truncate font-medium">
+                    {profile.display_name}
+                  </p>
+                  <p className="truncate text-sm text-slate-500">
+                    {email}
+                  </p>
+                </div>
+              </Link>
+
+              <div className="flex gap-2">
                 <Button
-                  key={link.href}
                   asChild
-                  variant="ghost"
-                  className="w-full justify-start text-sm"
-                  onClick={() => setOpen(false)}
+                  className="flex-1 bg-slate-900 text-white hover:bg-slate-800"
                 >
-                  <Link href={link.href}>{link.label}</Link>
-                </Button>
-              ))}
-            </nav>
-            <div className="border-t p-2 space-y-2 shrink-0">
-              {profile ? (
-                <>
                   <Link
                     href="/profile"
-                    className="flex items-center gap-3 rounded-md p-2 hover:bg-muted"
                     onClick={() => setOpen(false)}
+                    className="text-white"
                   >
-                    <Avatar className="h-8 w-8 shrink-0">
-                      {profile.avatar_url ? (
-                        <AvatarImage src={profile.avatar_url} alt="" />
-                      ) : null}
-                      <AvatarFallback>{initials}</AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate">
-                        {profile.display_name}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {email}
-                      </p>
-                    </div>
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
                   </Link>
-                  <div className="flex gap-2">
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      onClick={() => setOpen(false)}
-                    >
-                      <Link href="/profile">
-                        <User className="h-4 w-4 mr-1" />
-                        Profile
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      aria-label="Sign out"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => setOpen(false)}
-                  >
-                    <Link href="/login">Log in</Link>
-                  </Button>
-                  <Button
-                    asChild
-                    size="sm"
-                    className="w-full"
-                    onClick={() => setOpen(false)}
-                  >
-                    <Link href="/register">Sign up</Link>
-                  </Button>
-                </div>
-              )}
+                </Button>
+
+                <Button
+                  onClick={handleSignOut}
+                  className="bg-slate-900 text-white hover:bg-slate-800"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-3">
+              <Button
+                asChild
+                className="w-full bg-slate-900 text-white hover:bg-slate-800"
+              >
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="text-white"
+                >
+                  Log in
+                </Link>
+              </Button>
+
+              <Button
+                asChild
+                className="w-full bg-blue-600 text-white hover:bg-blue-700"
+              >
+                <Link
+                  href="/register"
+                  onClick={() => setOpen(false)}
+                  className="text-white"
+                >
+                  Sign up
+                </Link>
+              </Button>
             </div>
-          </div>
-        </>
-      )}
+          )}
+        </div>
+      </div>
+    </div>
+  </>
+)}
     </div>
   );
 }
