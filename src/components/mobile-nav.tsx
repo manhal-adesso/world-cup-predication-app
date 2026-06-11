@@ -55,7 +55,7 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
       <Button
         variant="ghost"
         size="icon"
-        className="md:hidden bg-muted"
+        className="md:hidden bg-background"
         onClick={() => setOpen((v) => !v)}
         aria-label="Open menu"
       >
