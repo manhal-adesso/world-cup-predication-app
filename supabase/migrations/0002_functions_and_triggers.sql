@@ -2,6 +2,8 @@
 -- Helpers, triggers, scoring
 -- =====================================================================
 
+
+
 -- ----- helper: is the current request from an admin?
 create or replace function public.is_admin()
 returns boolean
