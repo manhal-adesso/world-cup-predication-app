@@ -1,0 +1,67 @@
+import { test, expect } from "./fixtures";
+
+test.describe("Anonymous visitor", () => {
+  test("home page renders", async ({ page }) => {
+    await page.goto("/");
+    await expect(page).toHaveTitle(/.+/);
+    // Anonymous header has a "Log in" link.
+    await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+  });
+
+  test("protected route /dashboard redirects to /login", async ({ page }) => {
+    await page.goto("/dashboard");
+    await expect(page).toHaveURL(/\/login(\?|$)/);
+  });
+
+  test("protected route /admin redirects to /login", async ({ page }) => {
+    await page.goto("/admin");
+    await expect(page).toHaveURL(/\/login(\?|$)/);
+  });
+
+  test("login page renders form", async ({ page }) => {
+    await page.goto("/login");
+    await expect(page.getByLabel("Email")).toBeVisible();
+    await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+  });
+
+  test("invalid login shows error", async ({ page }) => {
+    const consoleErrors: string[] = [];
+    const pageErrors: string[] = [];
+    const requests: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") consoleErrors.push(msg.text());
+    });
+    page.on("pageerror", (err) => pageErrors.push(err.message));
+    page.on("request", (req) => {
+      if (req.url().includes("supabase.co")) requests.push(`${req.method()} ${req.url()}`);
+    });
+
+    await page.goto("/login");
+    const signInButton = page.getByRole("button", { name: "Sign in" });
+    await expect(signInButton).toBeEnabled();
+
+    await page.getByLabel("Email").fill("nobody-does-not-exist@example.com");
+    await page.getByLabel("Password", { exact: true }).fill("definitely-wrong-1");
+
+    // Try clicking; if nothing happens within 10s, dump diagnostics.
+    await signInButton.click();
+    await page.waitForTimeout(8_000);
+
+    const alertCount = await page.getByRole("alert").count();
+    const fieldErrors = await page.locator(".text-destructive").allInnerTexts();
+    const url = page.url();
+    const html = (await page.locator("body").innerHTML()).slice(0, 500);
+
+    throw new Error(
+      `DIAGNOSTIC ONLY:\n` +
+        `URL: ${url}\n` +
+        `Alerts visible: ${alertCount}\n` +
+        `Field errors: ${JSON.stringify(fieldErrors)}\n` +
+        `Console errors: ${JSON.stringify(consoleErrors).slice(0, 800)}\n` +
+        `Page errors: ${JSON.stringify(pageErrors).slice(0, 800)}\n` +
+        `Supabase requests: ${JSON.stringify(requests)}\n` +
+        `Body head: ${html}`
+    );
+  });
+});
