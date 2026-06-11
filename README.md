@@ -58,6 +58,7 @@ The `SUPABASE_SERVICE_ROLE_KEY` is used by admin-only API routes
    - `0002_functions_and_triggers.sql`
    - `0003_rls.sql`
    - `0004_views.sql`
+   - `0005_fix_league_members_recursion.sql` *(fixes infinite-recursion in league_members RLS and restricts league creation to admins)*
 3. (Optional) Run `supabase/seed.sql` for demo matches.
 
 ### Enable Google OAuth
@@ -145,6 +146,9 @@ supabase/
 
 - **RLS is on for every table.** Users read public match info & leaderboards, manage
   only their own predictions, and only see leagues they belong to.
+- **Leagues are admin-created.** Only admins may insert into `public.leagues`
+  (enforced both at the RLS layer and in `POST /api/leagues`). Regular users
+  join existing leagues via invite code.
 - **`is_admin()`** is a `SECURITY DEFINER` SQL function that all admin RLS policies
   call — no client-side trust.
 - **Service-role key** is only used for: (a) ICS import upserts, (b) recording
@@ -173,9 +177,16 @@ npm run lint
 
 1. Push this folder to a GitHub repo.
 2. Import the repo into Vercel.
-3. Add the 4 environment variables (see `.env.example`).
-   - **Important:** mark `SUPABASE_SERVICE_ROLE_KEY` as a server-only variable
-     (don't add a `NEXT_PUBLIC_` prefix).
+3. Add the 4 environment variables (see `.env.example`) under
+   **Project → Settings → Environment Variables**:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY` *(mark as server-only — do **not** prefix with `NEXT_PUBLIC_`)*
+   - `NEXT_PUBLIC_SITE_URL`
+
+   Set them for **all three** environments (Production, Preview, Development),
+   then redeploy. Missing env vars usually surface as a build-time error like
+   `Error: Missing NEXT_PUBLIC_SUPABASE_URL`.
 4. Set `NEXT_PUBLIC_SITE_URL` to the production URL (e.g. `https://wcpred.vercel.app`).
 5. Deploy.
 6. Back in Supabase → Authentication → URL Configuration, add the production URL
