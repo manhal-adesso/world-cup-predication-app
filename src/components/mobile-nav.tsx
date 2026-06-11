@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { LogOut, Menu, Trophy, User, X } from "lucide-react";
+import { LogOut, Menu, User, X } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -58,33 +58,20 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
         size="icon"
         className="md:hidden"
         onClick={() => setOpen(true)}
-        aria-label="Menu"
+        aria-label="Open menu"
       >
         <Menu className="h-5 w-5" />
       </Button>
 
       {open && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          {/* Overlay */}
+        <>
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm md:hidden"
             onClick={() => setOpen(false)}
           />
-
-          {/* Drawer */}
-          <div className="fixed inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col bg-background shadow-xl">
+          <div className="fixed inset-y-0 right-0 z-50 flex w-72 max-w-[80vw] flex-col bg-background shadow-xl md:hidden">
             <div className="flex items-center justify-between border-b px-4 h-14">
-              <Link
-                href="/"
-                className="flex items-center gap-2 font-bold"
-                onClick={() => setOpen(false)}
-              >
-                <Trophy className="h-5 w-5 text-primary" />
-                <span>
-                  <span className="lowercase">adesso</span> World Cup
-                  Prediction
-                </span>
-              </Link>
+              <span className="text-sm font-semibold">Menu</span>
               <Button
                 variant="ghost"
                 size="icon"
@@ -95,7 +82,7 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
               </Button>
             </div>
 
-            <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            <nav className="flex-1 overflow-y-auto p-3 space-y-0.5">
               {links.map((link) => (
                 <Button
                   key={link.href}
@@ -109,31 +96,29 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
               ))}
             </nav>
 
-            <div className="border-t p-4 space-y-3">
+            <div className="border-t p-3 space-y-3">
               {profile ? (
                 <>
-                  <div className="flex items-center gap-3">
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-3 flex-1 min-w-0"
-                      onClick={() => setOpen(false)}
-                    >
-                      <Avatar className="h-9 w-9 shrink-0">
-                        {profile.avatar_url ? (
-                          <AvatarImage src={profile.avatar_url} alt="" />
-                        ) : null}
-                        <AvatarFallback>{initials}</AvatarFallback>
-                      </Avatar>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {profile.display_name}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {email}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-3 rounded-lg p-2 hover:bg-muted -mx-1"
+                    onClick={() => setOpen(false)}
+                  >
+                    <Avatar className="h-9 w-9 shrink-0">
+                      {profile.avatar_url ? (
+                        <AvatarImage src={profile.avatar_url} alt="" />
+                      ) : null}
+                      <AvatarFallback>{initials}</AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium truncate">
+                        {profile.display_name}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {email}
+                      </p>
+                    </div>
+                  </Link>
                   <div className="flex gap-2">
                     <Button
                       asChild
@@ -147,7 +132,6 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
                         Profile
                       </Link>
                     </Button>
-                    <ThemeToggle />
                     <Button
                       variant="outline"
                       size="sm"
@@ -177,12 +161,11 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
                   >
                     <Link href="/register">Sign up</Link>
                   </Button>
-                  <ThemeToggle />
                 </div>
               )}
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );
