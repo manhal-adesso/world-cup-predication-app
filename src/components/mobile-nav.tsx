@@ -7,7 +7,6 @@ import { LogOut, Menu, User, X } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { ProfileRow } from "@/types/database";
 
@@ -66,11 +65,11 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
       {open && (
         <>
           <div
-            className="fixed inset-0 z-30 md:hidden"
+            className="fixed inset-0 z-50 md:hidden"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-2 z-40 min-w-[260px] w-full rounded-lg border bg-background shadow-lg md:hidden">
-            <div className="flex items-center justify-start gap-2 border-b px-3 py-2">
+          <div className="fixed right-2 top-16 bottom-2 z-50 flex w-64 flex-col rounded-xl border bg-background shadow-lg md:hidden">
+            <div className="flex items-center justify-start gap-2 border-b px-3 py-2 shrink-0">
               <Button
                 variant="ghost"
                 size="icon"
@@ -82,7 +81,7 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
               </Button>
               <span className="text-xs font-semibold text-muted-foreground">Menu</span>
             </div>
-            <nav className="p-2 space-y-0.5">
+            <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
               {links.map((link) => (
                 <Button
                   key={link.href}
@@ -95,8 +94,7 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
                 </Button>
               ))}
             </nav>
-
-            <div className="border-t p-2 space-y-2">
+            <div className="border-t p-2 space-y-2 shrink-0">
               {profile ? (
                 <>
                   <Link
