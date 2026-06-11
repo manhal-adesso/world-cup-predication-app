@@ -53,3 +53,13 @@ export const updateProfileSchema = z.object({
   displayName: z.string().trim().min(2).max(40),
   avatarUrl: z.string().url().optional().or(z.literal("")),
 });
+
+export const changePasswordSchema = z
+  .object({
+    newPassword: z.string().min(8).max(72),
+    confirmPassword: z.string().min(8).max(72),
+  })
+  .refine((v) => v.newPassword === v.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
