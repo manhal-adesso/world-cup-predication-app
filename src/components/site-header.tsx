@@ -4,6 +4,7 @@ import { Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UserMenu } from "@/components/user-menu";
+import { MobileNav } from "@/components/mobile-nav";
 import { getOptionalSession } from "@/lib/auth";
 
 export async function SiteHeader() {
@@ -14,12 +15,12 @@ export async function SiteHeader() {
       <div className="container flex h-14 items-center gap-4">
         <Link href="/" className="flex items-center gap-2 font-bold">
           <Trophy className="h-5 w-5 text-primary" />
-          <span>
+          <span className="truncate">
             <span className="lowercase">adesso</span> World Cup Prediction
           </span>
         </Link>
 
-        <nav className="ml-auto flex items-center gap-1 text-sm">
+        <nav className="ml-auto hidden md:flex items-center gap-1 text-sm">
           <Button asChild variant="ghost" size="sm">
             <Link href="/matches">Matches</Link>
           </Button>
@@ -55,6 +56,15 @@ export async function SiteHeader() {
             </>
           )}
         </nav>
+
+        <div className="md:hidden ml-auto flex items-center gap-1">
+          <ThemeToggle />
+          <MobileNav
+            profile={session?.profile ?? null}
+            email={session?.email ?? null}
+            isAdmin={session?.profile.is_admin ?? false}
+          />
+        </div>
       </div>
     </header>
   );

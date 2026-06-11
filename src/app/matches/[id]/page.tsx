@@ -46,9 +46,9 @@ export default async function MatchPage({
 
       <Card>
         <CardHeader>
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div>
-              <CardTitle className="text-2xl">
+              <CardTitle className="text-xl sm:text-2xl">
                 {match.home_team} <span className="text-muted-foreground">vs</span> {match.away_team}
               </CardTitle>
               <CardDescription>Kickoff: {formatKickoff(match.kickoff_time)}</CardDescription>
