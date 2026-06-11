@@ -58,9 +58,9 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
         size="icon"
         className="md:hidden"
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label="Open menu"
       >
-        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        <Menu className="h-5 w-5" />
       </Button>
 
       {open && (
@@ -69,7 +69,19 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
             className="fixed inset-0 z-30 md:hidden"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 top-2 z-40 w-64 rounded-lg border bg-background shadow-lg md:hidden">
+          <div className="absolute right-0 top-2 z-40 min-w-[260px] w-full rounded-lg border bg-background shadow-lg md:hidden">
+            <div className="flex items-center justify-start gap-2 border-b px-3 py-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7"
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+              <span className="text-xs font-semibold text-muted-foreground">Menu</span>
+            </div>
             <nav className="p-2 space-y-0.5">
               {links.map((link) => (
                 <Button
@@ -131,12 +143,12 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
                   </div>
                 </>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <Button
                     asChild
                     variant="outline"
                     size="sm"
-                    className="flex-1"
+                    className="w-full"
                     onClick={() => setOpen(false)}
                   >
                     <Link href="/login">Log in</Link>
@@ -144,7 +156,7 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
                   <Button
                     asChild
                     size="sm"
-                    className="flex-1"
+                    className="w-full"
                     onClick={() => setOpen(false)}
                   >
                     <Link href="/register">Sign up</Link>
