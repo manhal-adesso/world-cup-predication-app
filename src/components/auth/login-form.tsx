@@ -11,7 +11,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/password-input";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { env } from "@/lib/env";
 import { useHydrated } from "@/lib/hooks/use-hydrated";
 import { signInSchema } from "@/lib/validations";
 
@@ -59,7 +61,7 @@ export function LoginForm() {
               Forgot password?
             </Link>
           </div>
-          <Input id="password" type="password" autoComplete="current-password" {...form.register("password")} />
+          <PasswordInput id="password" autoComplete="current-password" {...form.register("password")} />
           {form.formState.errors.password && (
             <p className="text-xs text-destructive">{form.formState.errors.password.message}</p>
           )}
