@@ -46,8 +46,8 @@ export const signInSchema = z.object({
 export const signUpSchema = signInSchema.extend({
   displayName: z.string().trim().min(2).max(40),
 }).refine(
-  (v) => v.email.endsWith("@adesso.in"),
-  { message: "Only @adesso.in email addresses are allowed to register.", path: ["email"] }
+  (v) => v.email.includes("@adesso."),
+  { message: "Only @adesso email addresses are allowed to register.", path: ["email"] }
 );
 
 export const resetRequestSchema = z.object({ email: z.string().email() });
