@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,11 @@ export const dynamic = "force-dynamic";
 
 export default async function LeaguesPage() {
   const session = await requireSession();
+
+  if (!session.profile.is_admin) {
+    redirect("/dashboard");
+  }
+
   const supabase = await createSupabaseServerClient();
 
   const { data: memberships } = await supabase
@@ -32,7 +38,7 @@ export default async function LeaguesPage() {
           <CardContent className="space-y-3">
             {!memberships || memberships.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                You aren&apos;t a member of any league yet. Create one or join with a code.
+                You aren&apos;t a member of any league yet.
               </p>
             ) : (
               memberships.map((row) => {

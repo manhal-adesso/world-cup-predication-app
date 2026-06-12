@@ -42,8 +42,7 @@ export function MobileNav({ profile, email, isAdmin }: MobileNavProps) {
         { href: "/leaderboard", label: "Leaderboard" },
         { href: "/dashboard", label: "Dashboard" },
         { href: "/my-predictions", label: "My predictions" },
-        { href: "/leagues", label: "Leagues" },
-        ...(isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
+        ...(isAdmin ? [{ href: "/leagues", label: "Leagues" }, { href: "/admin", label: "Admin" }] : []),
       ]
     : [
         { href: "/matches", label: "Matches" },

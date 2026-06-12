@@ -33,9 +33,11 @@ export async function SiteHeader() {
               <Button asChild variant="ghost" size="sm">
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/leagues">Leagues</Link>
-              </Button>
+              {session.profile.is_admin && (
+                <Button asChild variant="ghost" size="sm">
+                  <Link href="/leagues">Leagues</Link>
+                </Button>
+              )}
               {session.profile.is_admin && (
                 <Button asChild variant="ghost" size="sm">
                   <Link href="/admin">Admin</Link>

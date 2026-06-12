@@ -101,42 +101,46 @@ export default async function DashboardPage() {
         />
       </div>
 
-      <section>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Your leagues</h2>
-          <Button asChild variant="link">
-            <Link href="/leagues">Manage leagues <ArrowRight className="h-4 w-4" /></Link>
-          </Button>
-        </div>
-        {leagues && leagues.length > 0 ? (
-          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {leagues.map((row) => {
-              const league = Array.isArray(row.leagues) ? row.leagues[0] : row.leagues;
-              if (!league) return null;
-              return (
-                <Card key={row.league_id}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{league.name}</CardTitle>
-                    <CardDescription>
-                      Code <Badge variant="outline" className="ml-1 font-mono">{league.invite_code}</Badge>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button asChild size="sm" variant="outline">
-                      <Link href={`/leagues/${row.league_id}`}>Open</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
+      {session.profile.is_admin || (leagues && leagues.length > 0) ? (
+        <section>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Your leagues</h2>
+            {session.profile.is_admin && (
+              <Button asChild variant="link">
+                <Link href="/leagues">Manage leagues <ArrowRight className="h-4 w-4" /></Link>
+              </Button>
+            )}
           </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            You haven&apos;t joined any leagues yet.{" "}
-            <Link href="/leagues" className="text-primary hover:underline">Create or join one →</Link>
-          </p>
-        )}
-      </section>
+          {leagues && leagues.length > 0 ? (
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {leagues.map((row) => {
+                const league = Array.isArray(row.leagues) ? row.leagues[0] : row.leagues;
+                if (!league) return null;
+                return (
+                  <Card key={row.league_id}>
+                    <CardHeader>
+                      <CardTitle className="text-base">{league.name}</CardTitle>
+                      <CardDescription>
+                        Code <Badge variant="outline" className="ml-1 font-mono">{league.invite_code}</Badge>
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button asChild size="sm" variant="outline">
+                        <Link href={`/leagues/${row.league_id}`}>Open</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              You haven&apos;t created any leagues yet.{" "}
+              <Link href="/leagues" className="text-primary hover:underline">Create one →</Link>
+            </p>
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }
