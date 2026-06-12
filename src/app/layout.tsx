@@ -21,10 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="flex-1">{children}</main>
             <footer className="border-t py-4 text-center text-xs text-muted-foreground">
               <div className="container">
-                Built for the 2026 FIFA World Cup ·{" "}
-                <a href="https://www.fifa.com" className="hover:underline" rel="noreferrer" target="_blank">
-                  fifa.com
-                </a>
+                Not affiliated with FIFA.
               </div>
             </footer>
           </div>

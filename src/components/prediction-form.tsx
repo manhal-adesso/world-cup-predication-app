@@ -20,7 +20,7 @@ interface PredictionFormProps {
 export function PredictionForm({ match, initial }: PredictionFormProps) {
   const router = useRouter();
 
-  const [home, setHome] = React.useState<number>(initial?.predicted_home_score ?? 1);
+  const [home, setHome] = React.useState<number>(initial?.predicted_home_score ?? 0);
   const [away, setAway] = React.useState<number>(initial?.predicted_away_score ?? 0);
   const [winner, setWinner] = React.useState<MatchWinner>(initial?.predicted_winner ?? "home");
   const [submitting, setSubmitting] = React.useState(false);
@@ -136,10 +136,15 @@ export function PredictionForm({ match, initial }: PredictionFormProps) {
         </Alert>
       )}
 
-      <Button type="submit" disabled={submitting} className="w-full">
-        {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-        {initial ? "Update Prediction" : "Save Prediction"}
-      </Button>
+      <div className="flex gap-3">
+        <Button type="submit" disabled={submitting} className="flex-1">
+          {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+          {initial ? "Update Prediction" : "Save Prediction"}
+        </Button>
+        <Button type="button" variant="outline" onClick={() => router.push("/dashboard")} className="flex-1">
+          Back to Dashboard
+        </Button>
+      </div>
     </form>
   );
 }
