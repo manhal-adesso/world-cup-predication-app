@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
 
@@ -30,12 +31,21 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((it) => (
-        <Card key={it.label}>
-          <CardHeader><CardTitle className="text-sm text-muted-foreground">{it.label}</CardTitle></CardHeader>
-          <CardContent><div className="text-3xl font-bold tabular-nums">{it.value}</div></CardContent>
-        </Card>
-      ))}
+      {items.map((it) =>
+        it.label === "Predictions submitted" ? (
+          <Link key={it.label} href="/admin/predictions">
+            <Card className="cursor-pointer transition hover:border-primary/50">
+              <CardHeader><CardTitle className="text-sm text-muted-foreground">{it.label}</CardTitle></CardHeader>
+              <CardContent><div className="text-3xl font-bold tabular-nums">{it.value}</div></CardContent>
+            </Card>
+          </Link>
+        ) : (
+          <Card key={it.label}>
+            <CardHeader><CardTitle className="text-sm text-muted-foreground">{it.label}</CardTitle></CardHeader>
+            <CardContent><div className="text-3xl font-bold tabular-nums">{it.value}</div></CardContent>
+          </Card>
+        )
+      )}
     </div>
   );
 }

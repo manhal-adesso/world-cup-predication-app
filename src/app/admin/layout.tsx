@@ -12,11 +12,12 @@ export default async function AdminLayout({
   await requireAdmin();
 
   const links = [
-    { href: "/admin",         label: "Overview" },
-    { href: "/admin/import",  label: "Import ICS" },
-    { href: "/admin/matches", label: "Matches" },
-    { href: "/admin/results", label: "Results" },
-    { href: "/admin/users",   label: "Users" },
+    { href: "/admin",           label: "Overview" },
+    { href: "/admin/import",    label: "Import ICS" },
+    { href: "/admin/matches",   label: "Matches" },
+    { href: "/admin/predictions", label: "Predictions" },
+    { href: "/admin/results",   label: "Results" },
+    { href: "/admin/users",     label: "Users" },
   ];
 
   return (

@@ -1,18 +1,14 @@
 /**
  * Admin endpoint to record a match result.
- * The DB triggers automatically:
- *   - derive `winner` from the scores
- *   - mark `status = finished`
- *   - recompute `points_awarded` on every prediction
- *   - recompute `total_points` on affected profiles
- *
- * So this route is intentionally thin.
+ * The route explicitly sets winner/status and recomputes scores,
+ * so the leaderboard updates immediately without relying solely on DB triggers.
  */
 import { ZodError } from "zod";
 
 import { handleZodError, jsonError, jsonOk } from "@/lib/api";
 import { createSupabaseAdminClient, createSupabaseServerClient } from "@/lib/supabase/server";
 import { matchResultSchema } from "@/lib/validations";
+import { deriveWinner } from "@/lib/scoring";
 
 async function ensureAdmin() {
   const supabase = await createSupabaseServerClient();
@@ -36,11 +32,19 @@ export async function POST(request: Request) {
   }
 
   const admin = createSupabaseAdminClient();
+
+  // Derive winner and status explicitly so the result is correct even if
+  // the BEFORE trigger on matches is not installed. DB triggers will also
+  // set these, but being explicit ensures correctness.
+  const winner = deriveWinner(parsed.homeScore, parsed.awayScore);
+
   const { data: match, error } = await admin
     .from("matches")
     .update({
       actual_home_score: parsed.homeScore,
       actual_away_score: parsed.awayScore,
+      winner,
+      status: "finished",
     })
     .eq("id", parsed.matchId)
     .select()
@@ -48,6 +52,16 @@ export async function POST(request: Request) {
 
   if (error) return jsonError(error.message, 400);
   if (!match) return jsonError("Match not found", 404);
+
+  // Explicitly recompute scores. The DB trigger should also do this, but
+  // calling directly ensures the leaderboard updates even if the trigger
+  // is not installed or fails silently.
+  const { error: rpcError } = await admin.rpc("recompute_match_scores", {
+    p_match_id: parsed.matchId,
+  });
+  if (rpcError) {
+    console.error("recompute_match_scores RPC error:", rpcError);
+  }
 
   return jsonOk({ match });
 }
