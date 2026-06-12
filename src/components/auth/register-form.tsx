@@ -22,7 +22,6 @@ type FormValues = { email: string; password: string; displayName: string };
 export function RegisterForm() {
   const router = useRouter();
   const [error, setError] = React.useState<string | null>(null);
-  const [info, setInfo] = React.useState<string | null>(null);
   const hydrated = useHydrated();
 
   const form = useForm<FormValues>({
@@ -32,7 +31,6 @@ export function RegisterForm() {
 
   async function onSubmit(values: FormValues) {
     setError(null);
-    setInfo(null);
     const supabase = createSupabaseBrowserClient();
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
@@ -50,7 +48,7 @@ export function RegisterForm() {
       router.replace("/dashboard");
       router.refresh();
     } else {
-      setInfo("Account created. Check your inbox to confirm your email before signing in.");
+      router.replace("/login");
     }
   }
 
@@ -80,7 +78,6 @@ export function RegisterForm() {
         </div>
 
         {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
-        {info  && <Alert variant="success"><AlertDescription>{info}</AlertDescription></Alert>}
 
         <Button
           type="submit"
