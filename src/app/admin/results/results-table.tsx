@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TBody, THead, Td, Th, Tr } from "@/components/ui/table";
-import { formatKickoff } from "@/lib/time";
+import { MatchTime } from "@/components/match-time";
 import type { MatchRow } from "@/types/database";
 
 interface Props {
@@ -70,7 +70,7 @@ function ResultRow({ match }: { match: MatchRow }) {
 
   return (
     <Tr>
-      <Td className="text-sm text-muted-foreground">{formatKickoff(match.kickoff_time)}</Td>
+      <Td className="text-sm text-muted-foreground"><MatchTime kickoffTime={match.kickoff_time} /></Td>
       <Td>
         <div className="font-medium">{match.home_team} vs {match.away_team}</div>
         {finished && <Badge variant="success" className="mt-1 gap-1"><Check className="h-3 w-3" />Scored</Badge>}

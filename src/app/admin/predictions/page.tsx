@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TBody, THead, Td, Th, Tr } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { MatchTime } from "@/components/match-time";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
-import { formatKickoff } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -57,7 +57,7 @@ export default async function AdminPredictionsPage() {
                       <div className="text-sm">
                         {match.home_team} vs {match.away_team}
                       </div>
-                      <div className="text-xs text-muted-foreground">{formatKickoff(match.kickoff_time)}</div>
+                      <div className="text-xs text-muted-foreground"><MatchTime kickoffTime={match.kickoff_time} /></div>
                     </Td>
                     <Td className="tabular-nums">
                       {p.predicted_home_score}-{p.predicted_away_score}

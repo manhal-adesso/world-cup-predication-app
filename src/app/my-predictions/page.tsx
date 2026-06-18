@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TBody, THead, Td, Th, Tr } from "@/components/ui/table";
+import { MatchTime } from "@/components/match-time";
 import { requireSession } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatKickoff } from "@/lib/time";
 
 export const metadata = { title: "My predictions" };
 export const dynamic = "force-dynamic";
@@ -70,7 +70,7 @@ export default async function MyPredictionsPage() {
                           {match.home_team} vs {match.away_team}
                         </Link>
                       </Td>
-                      <Td className="text-sm text-muted-foreground">{formatKickoff(match.kickoff_time)}</Td>
+                      <Td className="text-sm text-muted-foreground"><MatchTime kickoffTime={match.kickoff_time} /></Td>
                       <Td className="tabular-nums">{p.predicted_home_score}-{p.predicted_away_score}</Td>
                       <Td className="tabular-nums">
                         {hasResult ? `${match.actual_home_score}-${match.actual_away_score}` : "—"}

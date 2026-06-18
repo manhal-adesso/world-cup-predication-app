@@ -3,7 +3,7 @@ import { Clock, Lock } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatKickoff } from "@/lib/time";
+import { MatchTime } from "@/components/match-time";
 import type { MatchRow } from "@/types/database";
 
 interface MatchCardProps {
@@ -22,7 +22,7 @@ export function MatchCard({ match, locked, prediction }: MatchCardProps) {
           <div className="flex items-center justify-between text-xs text-muted-foreground">
             <span className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              {formatKickoff(match.kickoff_time)}
+              <MatchTime kickoffTime={match.kickoff_time} />
             </span>
             <StatusBadge status={match.status} locked={locked} />
           </div>

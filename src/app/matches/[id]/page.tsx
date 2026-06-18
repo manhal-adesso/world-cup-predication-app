@@ -6,10 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Countdown } from "@/components/countdown";
+import { MatchTime } from "@/components/match-time";
 import { PredictionForm } from "@/components/prediction-form";
 import { requireSession } from "@/lib/auth";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { formatKickoff } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +51,7 @@ export default async function MatchPage({
               <CardTitle className="text-xl sm:text-2xl">
                 {match.home_team} <span className="text-muted-foreground">vs</span> {match.away_team}
               </CardTitle>
-              <CardDescription>Kickoff: {formatKickoff(match.kickoff_time)}</CardDescription>
+              <CardDescription>Kickoff: <MatchTime kickoffTime={match.kickoff_time} /></CardDescription>
             </div>
             <Countdown kickoffISO={match.kickoff_time} />
           </div>

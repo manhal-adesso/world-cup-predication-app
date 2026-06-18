@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TBody, THead, Td, Th, Tr } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { MatchTime } from "@/components/match-time";
 import { createSupabaseAdminClient } from "@/lib/supabase/server";
-import { formatKickoff } from "@/lib/time";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,7 @@ export default async function AdminMatchesPage() {
             <TBody>
               {matches.map((m) => (
                 <Tr key={m.id}>
-                  <Td className="text-sm text-muted-foreground">{formatKickoff(m.kickoff_time)}</Td>
+                  <Td className="text-sm text-muted-foreground"><MatchTime kickoffTime={m.kickoff_time} /></Td>
                   <Td className="font-medium">{m.home_team} vs {m.away_team}</Td>
                   <Td><Badge variant="outline" className="capitalize">{m.status}</Badge></Td>
                   <Td className="text-right tabular-nums">
