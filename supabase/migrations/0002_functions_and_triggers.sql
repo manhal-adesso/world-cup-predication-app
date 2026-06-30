@@ -110,14 +110,35 @@ create or replace function public.score_prediction(
   p_away       integer,
   a_winner     public.match_winner,
   a_home       integer,
-  a_away       integer
+  a_away       integer,
+  p_pen_home   integer default null,
+  p_pen_away   integer default null,
+  a_pen_home   integer default null,
+  a_pen_away   integer default null
 ) returns integer
 language sql immutable as $$
   select
     case when a_winner is null or a_home is null or a_away is null then 0
     else
-      (case when p_winner = a_winner then 1 else 0 end)
-      + (case when p_home = a_home and p_away = a_away then 3 else 0 end)
+      -- Winner points
+      case
+        -- Match went to penalties: 'draw' prediction counts as correct
+        when a_pen_home is not null and a_pen_away is not null
+             and p_winner = 'draw' then 1
+        -- Normal winner match
+        when p_winner = a_winner then 1
+        else 0
+      end
+      +
+      -- Exact score points
+      case
+        -- Match went to penalties: check penalty scores
+        when a_pen_home is not null and a_pen_away is not null
+             and p_pen_home = a_pen_home and p_pen_away = a_pen_away then 3
+        -- Normal exact score check
+        when p_home = a_home and p_away = a_away then 3
+        else 0
+      end
     end;
 $$;
 
@@ -138,7 +159,9 @@ begin
   update public.predictions pr
      set points_awarded = public.score_prediction(
            pr.predicted_winner, pr.predicted_home_score, pr.predicted_away_score,
-           m.winner,            m.actual_home_score,    m.actual_away_score
+           m.winner,            m.actual_home_score,    m.actual_away_score,
+           pr.predicted_penalty_home, pr.predicted_penalty_away,
+           m.penalty_home_score,      m.penalty_away_score
          )
    where pr.match_id = p_match_id;
 
@@ -165,12 +188,22 @@ set search_path = public
 as $$
 begin
   if new.actual_home_score is not null and new.actual_away_score is not null then
-    new.winner :=
-      case
-        when new.actual_home_score > new.actual_away_score then 'home'
-        when new.actual_home_score < new.actual_away_score then 'away'
-        else 'draw'
-      end;
+    if new.is_knockout and new.penalty_home_score is not null and new.penalty_away_score is not null then
+      -- Knockout match decided by penalties: winner is the penalty winner
+      new.winner :=
+        case
+          when new.penalty_home_score > new.penalty_away_score then 'home'
+          when new.penalty_home_score < new.penalty_away_score then 'away'
+          else 'home'
+        end;
+    else
+      new.winner :=
+        case
+          when new.actual_home_score > new.actual_away_score then 'home'
+          when new.actual_home_score < new.actual_away_score then 'away'
+          else 'draw'
+        end;
+    end if;
     if new.status <> 'finished' then
       new.status := 'finished';
     end if;

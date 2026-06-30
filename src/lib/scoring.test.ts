@@ -69,8 +69,74 @@ describe("scorePrediction", () => {
   });
 });
 
+describe("scorePrediction with penalties", () => {
+  it("awards 1 point for predicting draw when match goes to penalties", () => {
+    expect(
+      scorePrediction({
+        predictedWinner: "draw",
+        predictedHomeScore: 1,
+        predictedAwayScore: 1,
+        actualWinner: "home",
+        actualHomeScore: 1,
+        actualAwayScore: 1,
+        actualPenaltyHome: 4,
+        actualPenaltyAway: 3,
+      }).total
+    ).toBe(1);
+  });
+
+  it("awards 4 points for correct penalty prediction (winner + exact penalty score)", () => {
+    expect(
+      scorePrediction({
+        predictedWinner: "draw",
+        predictedHomeScore: 1,
+        predictedAwayScore: 1,
+        actualWinner: "home",
+        actualHomeScore: 1,
+        actualAwayScore: 1,
+        predictedPenaltyHome: 4,
+        predictedPenaltyAway: 3,
+        actualPenaltyHome: 4,
+        actualPenaltyAway: 3,
+      }).total
+    ).toBe(4);
+  });
+
+  it("awards 1 point for predicting the correct winner when match goes to penalties", () => {
+    expect(
+      scorePrediction({
+        predictedWinner: "home",
+        predictedHomeScore: 2,
+        predictedAwayScore: 1,
+        actualWinner: "home",
+        actualHomeScore: 1,
+        actualAwayScore: 1,
+        actualPenaltyHome: 4,
+        actualPenaltyAway: 3,
+      }).total
+    ).toBe(1);
+  });
+
+  it("awards 0 points for wrong winner when match goes to penalties", () => {
+    expect(
+      scorePrediction({
+        predictedWinner: "away",
+        predictedHomeScore: 0,
+        predictedAwayScore: 1,
+        actualWinner: "home",
+        actualHomeScore: 1,
+        actualAwayScore: 1,
+        actualPenaltyHome: 4,
+        actualPenaltyAway: 3,
+      }).total
+    ).toBe(0);
+  });
+});
+
 describe("deriveWinner", () => {
   it("home wins", () => expect(deriveWinner(2, 1)).toBe("home"));
   it("away wins", () => expect(deriveWinner(0, 1)).toBe("away"));
   it("draw",     () => expect(deriveWinner(2, 2)).toBe("draw"));
+  it("penalty home wins", () => expect(deriveWinner(1, 1, 4, 3)).toBe("home"));
+  it("penalty away wins", () => expect(deriveWinner(1, 1, 3, 4)).toBe("away"));
 });

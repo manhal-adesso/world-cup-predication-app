@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { handleZodError, jsonError, jsonOk } from "@/lib/api";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { predictionSchema } from "@/lib/validations";
+import type { MatchWinner } from "@/types/database";
 
 export async function POST(request: Request) {
   const supabase = await createSupabaseServerClient();
@@ -35,9 +36,11 @@ export async function POST(request: Request) {
       {
         user_id: user.id,
         match_id: parsed.matchId,
-        predicted_winner: parsed.predictedWinner,
+        predicted_winner: parsed.predictedWinner as MatchWinner,
         predicted_home_score: parsed.predictedHomeScore,
         predicted_away_score: parsed.predictedAwayScore,
+        ...(parsed.predictedPenaltyHome !== undefined ? { predicted_penalty_home: parsed.predictedPenaltyHome } : {}),
+        ...(parsed.predictedPenaltyAway !== undefined ? { predicted_penalty_away: parsed.predictedPenaltyAway } : {}),
       },
       { onConflict: "user_id,match_id" }
     )

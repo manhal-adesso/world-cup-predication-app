@@ -63,10 +63,20 @@ export default async function MatchPage({
               <div className="mt-1 text-3xl font-bold tabular-nums">
                 {match.actual_home_score} - {match.actual_away_score}
               </div>
+              {match.penalty_home_score != null && match.penalty_away_score != null && (
+                <div className="mt-1 text-sm text-muted-foreground">
+                  Penalties: {match.penalty_home_score} - {match.penalty_away_score}
+                </div>
+              )}
               {prediction && (
-                <div className="mt-2 flex items-center gap-2 text-sm">
-                  <span>You predicted {prediction.predicted_home_score}-{prediction.predicted_away_score}.</span>
-                  <Badge variant={prediction.points_awarded > 0 ? "success" : "secondary"}>
+                <div className="mt-2 flex flex-col gap-1 text-sm">
+                  <span>
+                    You predicted {prediction.predicted_home_score}-{prediction.predicted_away_score}
+                    {prediction.predicted_penalty_home != null && prediction.predicted_penalty_away != null
+                      ? ` (penalties: ${prediction.predicted_penalty_home}-${prediction.predicted_penalty_away})`
+                      : ""}.
+                  </span>
+                  <Badge variant={prediction.points_awarded > 0 ? "success" : "secondary"} className="w-fit">
                     {prediction.points_awarded} pts
                   </Badge>
                 </div>

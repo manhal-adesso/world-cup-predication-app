@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const winnerEnum = z.enum(["home", "away", "draw"]);
+export const penaltyScoreSchema = z.coerce.number().int().min(0).max(30);
 
 export const predictionSchema = z
   .object({
@@ -8,6 +9,8 @@ export const predictionSchema = z
     predictedWinner: winnerEnum,
     predictedHomeScore: z.coerce.number().int().min(0).max(30),
     predictedAwayScore: z.coerce.number().int().min(0).max(30),
+    predictedPenaltyHome: penaltyScoreSchema.optional().nullable(),
+    predictedPenaltyAway: penaltyScoreSchema.optional().nullable(),
   })
   .refine(
     (v) =>
@@ -15,6 +18,14 @@ export const predictionSchema = z
       (v.predictedHomeScore <  v.predictedAwayScore && v.predictedWinner === "away") ||
       (v.predictedHomeScore === v.predictedAwayScore && v.predictedWinner === "draw"),
     { message: "Winner must match the score line", path: ["predictedWinner"] }
+  )
+  .refine(
+    (v) => {
+      if (v.predictedWinner !== "draw") return true;
+      if (v.predictedPenaltyHome == null && v.predictedPenaltyAway == null) return true;
+      return v.predictedPenaltyHome != null && v.predictedPenaltyAway != null;
+    },
+    { message: "Both penalty scores are required when predicting penalties", path: ["predictedPenaltyHome"] }
   );
 
 export type PredictionInput = z.infer<typeof predictionSchema>;
@@ -23,6 +34,8 @@ export const matchResultSchema = z.object({
   matchId: z.string().uuid(),
   homeScore: z.coerce.number().int().min(0).max(30),
   awayScore: z.coerce.number().int().min(0).max(30),
+  penaltyHomeScore: penaltyScoreSchema.optional().nullable(),
+  penaltyAwayScore: penaltyScoreSchema.optional().nullable(),
 });
 
 export const createLeagueSchema = z.object({

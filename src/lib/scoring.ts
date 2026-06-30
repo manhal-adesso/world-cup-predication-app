@@ -17,6 +17,10 @@ export interface ScoreInput {
   actualWinner: MatchWinner | null;
   actualHomeScore: number | null;
   actualAwayScore: number | null;
+  predictedPenaltyHome?: number | null;
+  predictedPenaltyAway?: number | null;
+  actualPenaltyHome?: number | null;
+  actualPenaltyAway?: number | null;
 }
 
 export interface ScoreBreakdown {
@@ -33,6 +37,10 @@ export function scorePrediction(input: ScoreInput): ScoreBreakdown {
     actualWinner,
     actualHomeScore,
     actualAwayScore,
+    predictedPenaltyHome,
+    predictedPenaltyAway,
+    actualPenaltyHome,
+    actualPenaltyAway,
   } = input;
 
   if (
@@ -43,17 +51,41 @@ export function scorePrediction(input: ScoreInput): ScoreBreakdown {
     return { winnerPoints: 0, exactScorePoints: 0, total: 0 };
   }
 
-  const winnerPoints = predictedWinner === actualWinner ? 1 : 0;
-  const exactScorePoints =
-    predictedHomeScore === actualHomeScore &&
-    predictedAwayScore === actualAwayScore
-      ? 3
-      : 0;
+  const wentToPenalties = actualPenaltyHome != null && actualPenaltyAway != null;
+
+  let winnerPoints: number;
+  let exactScorePoints: number;
+
+  if (wentToPenalties) {
+    winnerPoints =
+      predictedWinner === actualWinner || predictedWinner === "draw" ? 1 : 0;
+    exactScorePoints =
+      predictedPenaltyHome === actualPenaltyHome &&
+      predictedPenaltyAway === actualPenaltyAway
+        ? 3
+        : 0;
+  } else {
+    winnerPoints = predictedWinner === actualWinner ? 1 : 0;
+    exactScorePoints =
+      predictedHomeScore === actualHomeScore &&
+      predictedAwayScore === actualAwayScore
+        ? 3
+        : 0;
+  }
 
   return { winnerPoints, exactScorePoints, total: winnerPoints + exactScorePoints };
 }
 
-export function deriveWinner(homeScore: number, awayScore: number): MatchWinner {
+export function deriveWinner(
+  homeScore: number,
+  awayScore: number,
+  penaltyHome?: number | null,
+  penaltyAway?: number | null,
+): MatchWinner {
+  if (penaltyHome != null && penaltyAway != null) {
+    if (penaltyHome > penaltyAway) return "home";
+    if (penaltyHome < penaltyAway) return "away";
+  }
   if (homeScore > awayScore) return "home";
   if (homeScore < awayScore) return "away";
   return "draw";

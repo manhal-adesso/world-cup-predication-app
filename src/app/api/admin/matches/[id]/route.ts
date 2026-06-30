@@ -8,6 +8,7 @@ const matchUpdateSchema = z.object({
   awayTeam: z.string().trim().min(2).max(60).optional(),
   kickoffTime: z.string().datetime().optional(),
   status: z.enum(["scheduled", "live", "finished", "cancelled"]).optional(),
+  isKnockout: z.boolean().optional(),
 });
 
 async function ensureAdmin() {
@@ -39,10 +40,11 @@ export async function PATCH(
   const { data, error } = await admin
     .from("matches")
     .update({
-      ...(parsed.homeTeam   ? { home_team: parsed.homeTeam } : {}),
-      ...(parsed.awayTeam   ? { away_team: parsed.awayTeam } : {}),
+      ...(parsed.homeTeam    ? { home_team: parsed.homeTeam } : {}),
+      ...(parsed.awayTeam    ? { away_team: parsed.awayTeam } : {}),
       ...(parsed.kickoffTime ? { kickoff_time: parsed.kickoffTime } : {}),
-      ...(parsed.status     ? { status: parsed.status } : {}),
+      ...(parsed.status      ? { status: parsed.status } : {}),
+      ...(parsed.isKnockout !== undefined ? { is_knockout: parsed.isKnockout } : {}),
     })
     .eq("id", id)
     .select()

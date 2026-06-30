@@ -1,14 +1,10 @@
-/**
- * Admin endpoint to record a match result.
- * The route explicitly sets winner/status and recomputes scores,
- * so the leaderboard updates immediately without relying solely on DB triggers.
- */
 import { ZodError } from "zod";
 
 import { handleZodError, jsonError, jsonOk } from "@/lib/api";
 import { createSupabaseAdminClient, createSupabaseServerClient } from "@/lib/supabase/server";
 import { matchResultSchema } from "@/lib/validations";
 import { deriveWinner } from "@/lib/scoring";
+import type { MatchWinner } from "@/types/database";
 
 async function ensureAdmin() {
   const supabase = await createSupabaseServerClient();
@@ -33,18 +29,27 @@ export async function POST(request: Request) {
 
   const admin = createSupabaseAdminClient();
 
-  // Derive winner and status explicitly so the result is correct even if
-  // the BEFORE trigger on matches is not installed. DB triggers will also
-  // set these, but being explicit ensures correctness.
-  const winner = deriveWinner(parsed.homeScore, parsed.awayScore);
+  // Derive winner from penalty scores first (if provided), then fall back to regular scores
+  const winner = deriveWinner(
+    parsed.homeScore,
+    parsed.awayScore,
+    parsed.penaltyHomeScore,
+    parsed.penaltyAwayScore
+  );
 
   const { data: match, error } = await admin
     .from("matches")
     .update({
       actual_home_score: parsed.homeScore,
       actual_away_score: parsed.awayScore,
-      winner,
+      winner: winner as MatchWinner,
       status: "finished",
+      ...(parsed.penaltyHomeScore !== undefined && parsed.penaltyHomeScore !== null
+        ? { penalty_home_score: parsed.penaltyHomeScore }
+        : {}),
+      ...(parsed.penaltyAwayScore !== undefined && parsed.penaltyAwayScore !== null
+        ? { penalty_away_score: parsed.penaltyAwayScore }
+        : {}),
     })
     .eq("id", parsed.matchId)
     .select()

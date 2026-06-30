@@ -63,6 +63,9 @@ export interface Database {
           actual_away_score: number | null;
           winner: MatchWinner | null;
           status: MatchStatus;
+          is_knockout: boolean;
+          penalty_home_score: number | null;
+          penalty_away_score: number | null;
           created_at: string;
         };
         Insert: {
@@ -75,6 +78,9 @@ export interface Database {
           actual_away_score?: number | null;
           winner?: MatchWinner | null;
           status?: MatchStatus;
+          is_knockout?: boolean;
+          penalty_home_score?: number | null;
+          penalty_away_score?: number | null;
           created_at?: string;
         };
         Update: {
@@ -87,6 +93,9 @@ export interface Database {
           actual_away_score?: number | null;
           winner?: MatchWinner | null;
           status?: MatchStatus;
+          is_knockout?: boolean;
+          penalty_home_score?: number | null;
+          penalty_away_score?: number | null;
           created_at?: string;
         };
         Relationships: [];
@@ -100,6 +109,8 @@ export interface Database {
           predicted_home_score: number;
           predicted_away_score: number;
           points_awarded: number;
+          predicted_penalty_home: number | null;
+          predicted_penalty_away: number | null;
           created_at: string;
           updated_at: string;
         };
@@ -111,6 +122,8 @@ export interface Database {
           predicted_home_score: number;
           predicted_away_score: number;
           points_awarded?: number;
+          predicted_penalty_home?: number | null;
+          predicted_penalty_away?: number | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -122,6 +135,8 @@ export interface Database {
           predicted_home_score?: number;
           predicted_away_score?: number;
           points_awarded?: number;
+          predicted_penalty_home?: number | null;
+          predicted_penalty_away?: number | null;
           created_at?: string;
           updated_at?: string;
         };

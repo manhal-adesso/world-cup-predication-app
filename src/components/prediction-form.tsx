@@ -23,6 +23,8 @@ export function PredictionForm({ match, initial }: PredictionFormProps) {
   const [home, setHome] = React.useState<number>(initial?.predicted_home_score ?? 0);
   const [away, setAway] = React.useState<number>(initial?.predicted_away_score ?? 0);
   const [winner, setWinner] = React.useState<MatchWinner>(initial?.predicted_winner ?? "home");
+  const [penaltyHome, setPenaltyHome] = React.useState<number>(initial?.predicted_penalty_home ?? 0);
+  const [penaltyAway, setPenaltyAway] = React.useState<number>(initial?.predicted_penalty_away ?? 0);
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
@@ -38,6 +40,18 @@ export function PredictionForm({ match, initial }: PredictionFormProps) {
 
   const locked = isLocked(match.kickoff_time);
 
+  const showPenaltyInputs = winner === "draw";
+
+  function handleWinnerChange(value: string) {
+    const w = value as MatchWinner;
+    if (w === "draw" && home !== away) {
+      const max = Math.max(home, away);
+      setHome(max);
+      setAway(max);
+    }
+    setWinner(w);
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -45,15 +59,21 @@ export function PredictionForm({ match, initial }: PredictionFormProps) {
     setSubmitting(true);
 
     try {
+      const body: Record<string, unknown> = {
+        matchId: match.id,
+        predictedWinner: winner,
+        predictedHomeScore: home,
+        predictedAwayScore: away,
+      };
+      if (showPenaltyInputs) {
+        body.predictedPenaltyHome = penaltyHome;
+        body.predictedPenaltyAway = penaltyAway;
+      }
+
       const res = await fetch("/api/predictions", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          matchId: match.id,
-          predictedWinner: winner,
-          predictedHomeScore: home,
-          predictedAwayScore: away,
-        }),
+        body: JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -89,11 +109,11 @@ export function PredictionForm({ match, initial }: PredictionFormProps) {
         <Label>Winner</Label>
         <RadioGroup
           value={winner}
-          onValueChange={(v) => setWinner(v as MatchWinner)}
+          onValueChange={handleWinnerChange}
           className="grid grid-cols-1 gap-2 sm:grid-cols-3"
         >
           <WinnerOption value="home" label={match.home_team} current={winner} />
-          <WinnerOption value="draw" label="Draw"           current={winner} />
+          <WinnerOption value="draw" label="Penalty" current={winner} />
           <WinnerOption value="away" label={match.away_team} current={winner} />
         </RadioGroup>
       </div>
@@ -124,6 +144,38 @@ export function PredictionForm({ match, initial }: PredictionFormProps) {
           />
         </div>
       </div>
+
+      {showPenaltyInputs && (
+        <div className="rounded-lg border p-4 space-y-3">
+          <Label className="text-sm font-semibold">Penalty shootout prediction</Label>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="penalty-home">{match.home_team}</Label>
+              <Input
+                id="penalty-home"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={30}
+                value={penaltyHome}
+                onChange={(e) => setPenaltyHome(Math.max(0, Math.min(30, Number(e.target.value) || 0)))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="penalty-away">{match.away_team}</Label>
+              <Input
+                id="penalty-away"
+                type="number"
+                inputMode="numeric"
+                min={0}
+                max={30}
+                value={penaltyAway}
+                onChange={(e) => setPenaltyAway(Math.max(0, Math.min(30, Number(e.target.value) || 0)))}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {error && (
         <Alert variant="destructive">
